@@ -49,6 +49,7 @@ export default {
     return{
       username:'',
       password:'',
+      password2:'',
       arr:[]
     }
   },
