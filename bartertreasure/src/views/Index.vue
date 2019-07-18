@@ -1,5 +1,6 @@
 <template>
   <div>
+    <router-view></router-view>
     <div id="inner">
       <!-- active表示当前索引选中的值 -->
       <van-tabbar v-model="active" active-color="lightgreen">
