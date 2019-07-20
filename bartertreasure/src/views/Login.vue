@@ -23,9 +23,11 @@
              @blur="check1()"
           />
           <van-button type="primary" round size="large" to="/index">登录</van-button>
-          <span>
-            还没有账号？点击<span @click="toRegister">立即注册</span>
-          </span>
+            <van-row type="flex" justify="space-between">
+              <span @click="toResetPwd()">忘记密码</span>
+              <span @click="toRegister()">注册帐号</span>
+            </van-row>
+
         </van-cell-group>
       </div>
     </div>
@@ -43,6 +45,9 @@ export default {
     }
   },
   methods: {
+    toResetPwd(){
+      this.$router.push('/resetPwd')
+    },
     toRegister(){
       this.$router.push('/register')
     },
@@ -66,4 +71,7 @@ export default {
 }
 </script>
 <style scope>
+#inner{
+  margin-top:46px;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
    <div>
       <van-nav-bar
-        title="注册"
+        title="找回密码"
         left-text="返回"
         :left-arrow="true"
         :fixed="true"
@@ -24,7 +24,7 @@
             left-icon="chat"
             placeholder="请输入短信验证码"
           >
-            <van-button slot="button" size="small" type="primary">发送验证码</van-button>
+            <van-button slot="button" size="small" type="primary" @click="yz()">发送验证码</van-button>
           </van-field>
 
           <van-field
@@ -41,16 +41,16 @@
             left-icon="lock"
             @blur="check2()"
           />
-          <van-button type="warning" size="large" round @click="register()">注册</van-button>
+          <van-button type="warning" size="large" round @click="register()">重置密码</van-button>
         </van-cell-group>
       </div>
-
     </div>
 </template>
 <script>
-import { Toast } from 'vant';
+import { Toast } from 'vant'
+import qs from 'qs'
 export default {
-  name:'Register',
+  name:'ResetPwd',
   data(){
     return{
       phone:'',
@@ -88,9 +88,34 @@ export default {
       }else{
         Toast('请输入正确的手机号');
       }
+    },
+    yz(){
+      var code = String(Math.floor(Math.random()*(9999-1000)+1000));
+      this.$axios.get('http://v.juhe.cn/sms/send',{ //聚合短信接口
+        data:qs.stringify({
+          'mobile':this.phone,
+          'tpl_id':'173919',
+          'tpl_value':'#code#='+code,
+          'key':'2ddb2bef3b69719b39f3a84041397714'
+        }),
+      }).then((data)=>{
+        console.log(data,code)
+        if(data.error_code == 0){
+          Toast('验证码已发送');
+        }
+        if(this.sms == code){
+          Toast('验证成功');
+        }else{
+          Toast('验证失败');
+        }
+      }).catch((err)=>{
+        console.log(err);
+      })
     }
+
   }
 }
+
 </script>
 <style scope>
 #inner{

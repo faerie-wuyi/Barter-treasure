@@ -9,6 +9,8 @@ import Category from '../views/Category.vue'
 import Release from '../views/Release.vue'
 import Cart from '../views/Cart.vue'
 import User from '../views/User.vue'
+import ResetPwd from '../views/ResetPwd.vue'
+import store from '../store/index'
 
 Vue.use(Router)
 
@@ -25,7 +27,12 @@ export default new Router({
     {
       path:'/register',
       component:Register
-    },{
+    },
+    {
+      path:'/resetPwd',
+      component:ResetPwd
+    },
+    {
       path:'/index',
       redirect:'/home',
       component:Index,
@@ -36,7 +43,9 @@ export default new Router({
         {path:'/cart',component:Cart},
         {path:'/user',component:User}
       ]
-    }
+    },
+
+
 
   ]
 })
