@@ -72,11 +72,11 @@
         </div>
         <div>
           <p style="margin: 5px 0">我的服务</p>
-          <van-grid :column-num="3">
-            <van-grid-item
+          <van-grid :column-num="4">
+            <!-- <van-grid-item
               icon="like-o"
               text="收藏"
-            />
+            /> -->
             <van-grid-item
               icon="gift-o"
               text="捡漏专区"
@@ -91,10 +91,6 @@
               @click="address()"
             />
             <van-grid-item
-              icon="service-o"
-              text="客服"
-            />
-            <van-grid-item
               icon="setting-o"
               text="设置"
             />
@@ -103,7 +99,7 @@
         <div>
           <p style="margin: 5px 0">猜你喜欢</p>
           <div class="likefather">
-            <div class="like left">
+            <div @click="godetail()" class="like left">
               <img :src="likeimg" alt="">
               <p>{{likename}}</p>
               <span>￥{{likeprice}}</span>
@@ -158,6 +154,9 @@ export default {
     },
     address(){
       this.$router.push("/address")
+    },
+    godetail(){
+      console.log(123444)
     }
   },
   mounted() {
