@@ -13,26 +13,17 @@
     <van-row>
       <van-col span="4">
         <van-sidebar v-model="activeKey">
-          <van-sidebar-item title="标签名称" />
-          <van-sidebar-item title="标签名称" />
-          <van-sidebar-item title="标签名称" />
-          <van-sidebar-item title="标签名称" />
-          <van-sidebar-item title="标签名称" />
+          <van-sidebar-item title="推荐" to="/brand" />
+          <van-sidebar-item title="品牌推荐" to="/surface" />
+          <van-sidebar-item title="名包" to="/handbag" />
+          <van-sidebar-item title="配饰" to="/ornament" />
+          <van-sidebar-item title="女装" to="/meart"/>
         </van-sidebar>
       </van-col>
-
       <van-col span="12">
-          <van-swipe :autoplay="3000" indicator-color="white">
-            <van-swipe-item><img src="../assets/logo.png" alt=""></van-swipe-item>
-            <van-swipe-item><img src="../assets/logo.png" alt=""></van-swipe-item>
-            <van-swipe-item><img src="../assets/logo.png" alt=""></van-swipe-item>
-            <van-swipe-item><img src="../assets/logo.png" alt=""></van-swipe-item>
-          </van-swipe>
-     <van-divider>品牌推荐</van-divider>
+        <router-view />
       </van-col>
-     
     </van-row>
-    
   </div>
 </template>
 
@@ -64,7 +55,6 @@ export default {
 }
 
 img {
- 
-  height: 100px; 
+  height: 100px;
 }
 </style>
