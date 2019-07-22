@@ -1,5 +1,6 @@
 <template>
   <div>
+  
     <router-view></router-view>
     <van-tabbar class="footer" v-model="active" active-color="lightgreen">
       <van-tabbar-item icon="home-o" to="/home">首页</van-tabbar-item>
@@ -14,7 +15,7 @@
 
 <script>
 export default {
-  name:'Index',
+  name:'index',
   data(){
     return{
       active:0,
