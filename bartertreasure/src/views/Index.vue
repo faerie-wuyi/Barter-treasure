@@ -26,6 +26,5 @@ export default {
 <style scope>
 .footer{
   display: flex;
-  flex: 0;
 }
 </style>

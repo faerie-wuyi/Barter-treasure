@@ -90,6 +90,7 @@ export default {
   z-index: 10;
 }
 #inner{
+  height: 100%;
   display: flex;
   flex-direction: column;
   flex: 1;
