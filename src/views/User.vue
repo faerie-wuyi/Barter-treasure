@@ -96,8 +96,9 @@
             />
           </van-grid>
         </div>
+        <!-- hhhhhh -->
         <div>
-          <p style="margin: 5px 0">猜你喜欢</p>
+          <p style="margin: 5px 0">猜你喜欢商品名称</p>
           <div class="likefather">
             <div @click="godetail()" class="like left">
               <img :src="likeimg" alt="">
