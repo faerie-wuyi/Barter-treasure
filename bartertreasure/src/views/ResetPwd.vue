@@ -44,6 +44,7 @@
           <van-button type="warning" size="large" round @click="register()">重置密码</van-button>
         </van-cell-group>
       </div>
+      <h3>没接口,别看了</h3>
     </div>
 </template>
 <script>

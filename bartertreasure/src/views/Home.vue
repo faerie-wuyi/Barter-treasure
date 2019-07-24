@@ -1,35 +1,48 @@
 <template>
    <div>
-     <van-search class="search" shape="round" placeholder="请输入搜索关键词" v-model="value" />
+     <van-search class="search" shape="round" placeholder="请输入搜索关键词" v-model="ssmsg" show-action @keyup="onSearch"/>
+     <ul class="ss">
+       <li v-for="(item,i) in ssend" :key="i" @click="tap(item.id)">{{item.goodsName}}</li>
+     </ul>
      <div id="inner">
+
         <van-swipe :autoplay="3000" indicator-color="white">
-          <van-swipe-item v-for="(img,i) in images" :key="i">
-            <img class="swipe" :src="img">
+          <van-swipe-item v-for="img in images" :key="img.id" @click="tap(img.id)">
+            <img class="swipe" :src="img.goodsPath">
           </van-swipe-item>
         </van-swipe>
 
-        <div class="countDown">距离活动结束仅剩<van-count-down class="count" :time="time" />,立即抢购→</div>
-        <div class="reward">抢红包</div>
-
         <div class="recommend">
-          <h4 class="title">今日推荐<span>更多</span></h4>
-          <div class="content"></div>
+          <h4 class="title">今日推荐</h4>
+          <van-card
+            v-for="item in listTJ"
+            :price="item.money"
+            :desc="item.brand"
+            :title="item.goodsName"
+            :thumb="item.path"
+            @click="tap(item.id)"
+            :key="item.id"
+          />
+
         </div>
 
         <div class="recommend">
-          <h4 class="title">捡漏专区<span>更多</span></h4>
-          <div class="content"></div>
+          <h4 class="title">捡漏专区</h4>
+          <van-card
+              v-for="item in listJL"
+            :price="item.money"
+            :desc="item.brand"
+            :title="item.goodsName"
+            :thumb="item.path"
+            @click="tap(item.id)"
+            :key="item.id"
+          />
+
         </div>
 
-        <div class="recommend">
-          <h4 class="title">热门商品<span>更多</span></h4>
-          <div class="content"></div>
-        </div>
 
-        <div class="recommend">
-          <h4 class="title">热门品牌<span>更多</span></h4>
-          <div class="content"></div>
-        </div>
+
+
      </div>
 
 
@@ -41,43 +54,56 @@ export default {
   name:'Home',
   data(){
     return{
-      value:'',
       num:6,
       active:'0',
-        time: 30 * 60 * 60 * 1000,
-      images:[
-        'http://p6.qhimg.com/bdr/__85/t01aee5cf7c30a0d9c1.jpg',
-        'http://p5.qhimg.com/bdm/341_210_0/t01d542fbbe30219454.jpg',
-        'http://p0.qhimg.com/bdm/341_210_0/t017bb05c286722c532.jpg',
-        'http://p6.qhimg.com/bdm/683_422_0/t01aee5cf7c30a0d9c1.jpg'
-      ]
+      images:[],
+      ssmsg:'',
+      ssall:[],
+      ssend:[],
+      listTJ:[],
+      listJL:[]
+      // time: 30 * 60 * 60 * 1000,
     }
   },
+  computed:{
+
+  },
   methods:{
-    toRecommend(){
-
-      this.$router.push('/recommend')
+    tap(id){
+      this.$router.push('/Xqy/id=' + id)
     },
-    toBags(){
-      this.$router.push('/bags')
-    },
-    toAccessories(){
-      this.$router.push('/accessories')
-
-    },
-    toWomenDress(){
-      this.$router.push('/womenDress')
-    },
-    toWomenShoes(){
-      this.$router.push('/womenShoes')
-    },
-    toMen(){
-      this.$router.push('/Men')
+    onSearch(){
+      this.$axios({
+      methods:'post',
+      url:'http://106.12.14.214:8889/luxury/goods/search'
+    }).then((data)=>{
+        this.ssall = data.data;
+        this.ssend = this.ssall.filter(item=>{
+          return item.goodsName.match(this.ssmsg)
+        }) //空则匹配所有
+      })
 
     }
   },
   mounted(){
+    // this.$axios({
+    //   methods:'post',
+    //   url:'http://106.12.14.214:8889/luxury/slideshow/list'
+    // }).then((data)=>{
+    //   //console.log(data.data)
+    //   this.images = data.data
+    // })
 
+    //并发请求
+    this.$axios.all([
+      this.$axios.post('http://106.12.14.214:8889/luxury/slideshow/list'),
+      this.$axios.post('http://106.12.14.214:8889/luxury/goods/listShow',{flag:1}), //今日推荐
+      this.$axios.post('http://106.12.14.214:8889/luxury/goods/listShow',{flag:2})  //捡漏专区
+    ]).then(this.$axios.spread((lunboResp,tuijianResp,jianlouResp)=>{
+      this.images = lunboResp.data
+      this.listTJ = tuijianResp.data
+      this.listJL = jianlouResp.data
+    }))//只有两个请求都完成才会成功，否则会被catch捕获
   }
 }
 
@@ -88,6 +114,13 @@ export default {
   position: fixed;
   top:0;
   z-index: 10;
+}
+.ss{
+  position: fixed;
+  top:54px;
+  z-index: 20;
+  width: 100%;
+  background: #fff;
 }
 #inner{
   height: 100%;
@@ -118,7 +151,6 @@ export default {
   margin: 0 auto;
 }
 .recommend{
-  background: rgb(243, 129, 148);
   width: 95%;
   min-height: 90px;
   border-radius: 5%;
