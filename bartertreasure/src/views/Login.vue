@@ -5,7 +5,7 @@
         :fixed="true"
       />
       <div id="inner">
-        <img src="../../build/ywb2.png" alt="">
+        <img class="img" src="../../build/ywb2.png" alt="">
         <van-cell-group>
           <van-field
             v-model="username"
@@ -124,5 +124,8 @@ export default {
 <style scope>
 #inner{
   margin-top:46px;
+}
+.img{
+  margin:0 auto;
 }
 </style>
