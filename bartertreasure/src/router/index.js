@@ -5,8 +5,9 @@ import Brand from '@/views/Brand'
 import Index from '@/views/Index'
 import Brandtj from '@/views/Brandtj'
 import Handbag from '@/views/Handbag'
-import Surface from '@/views/Surface'
+import Other from '@/views/Other'
 import Ornament from '@/views/Ornament'
+import Shoe from '@/views/Shoe'
 import Meart from '@/views/Meart'
 import Xqy from '@/views/Xqy'
 import Cart from '@/views/Cart'
@@ -122,6 +123,7 @@ export default new Router({
     routes: [{
             path: '/index',
             name: 'Index ',
+
             component: Index,
             children: [{
                     path: '/cart',
@@ -141,8 +143,8 @@ export default new Router({
                             path: '/handbag',
                             component: Handbag,
                         }, {
-                            path: '/surface',
-                            component: Surface,
+                            path: '/other',
+                            component: Other,
                         },
                         {
                             path: '/ornament',
@@ -151,10 +153,14 @@ export default new Router({
                         {
                             path: '/meart',
                             component: Meart,
+                        },
+                        {
+                            path: '/shoe',
+                            component: Shoe,
                         }
 
                     ],
-                    redirect: '/brand'
+
 
                 }
             ]
@@ -165,7 +171,7 @@ export default new Router({
             component: Brandtj,
         },
         {
-            path: '/xqy',
+            path: '/xqy/:id',
             name: 'Xqy',
             component: Xqy,
         }, {

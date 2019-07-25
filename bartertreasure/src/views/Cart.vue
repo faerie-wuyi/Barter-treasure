@@ -1,24 +1,38 @@
 <template>
   <div>
-    <van-nav-bar :fixed="true" title="购物袋" />
+    <van-nav-bar :fixed="true" title="购物袋" left-text="返回" left-arrow @click-left="onClickLeft" />
     <div class="jiazai">
       <van-count-down class="timer" :time="time" format="您还剩余 mm 分 ss 秒支付订单" />
       <div>
         <div>
           <div id="com">
             <v-com>
-              <!-- <div :slot="aaa">
-              <van-radio-group v-model="radio" >
-                <van-checkbox v-model="result" icon-size="14px"></van-checkbox>
-              </van-radio-group>
-              <van-card 
-                num="1"
-                price="2.00"
-                desc="描述信息"
-                title="商品标题"
-                thumb="https://img.yzcdn.cn/vant/t-thirt.jpg"
-              />
-              </div> -->
+              <div :slot="aaa" v-for="(item,index) in list" :key="index">
+                <van-card
+                  id="id"
+                  :num="item.count"
+                  :price="item.goodsVo2.money"
+                  :desc="item.goodsVo2.goodsName"
+                  :title="item.goodsBrand.brandName"
+                  :thumb="item.goodsPath.path"
+                >
+                  <div slot="footer">
+                    <van-stepper
+                      v-model="item.count"
+                      :disable-input="true"
+                      :step="step"
+                      @plus="jia(index,item.id,item.count)"
+                      @minus="jian(index,item.id,item.count)"
+                    />
+                    <van-checkbox
+                      v-model="item.check"
+                      class="checkBox"
+                      @click="gou(item.check,index)"
+                    ></van-checkbox>
+                    <button @click="del(item.id,index)" style="background:pink;border:pink;">删除</button>
+                  </div>
+                </van-card>
+              </div>
             </v-com>
           </div>
 
@@ -66,17 +80,19 @@
     <van-submit-bar
       class="xiadan"
       :decimal-length="0"
-      :price="0"
+      :price="sum"
       button-text="去下单"
       @submit="onSubmit"
     >
-      <van-checkbox v-model="checked">全选</van-checkbox>
+      <van-checkbox v-model="checked" @click="all()">全选</van-checkbox>
     </van-submit-bar>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import Test from "./Test";
+import { NavBar } from "vant";
 export default {
   components: {
     "v-com": Test
@@ -84,13 +100,18 @@ export default {
   name: "Cart",
   data() {
     return {
-      checked: true,
+      value: "1",
+      list: [],
+      checked: false,
       time: 15 * 60 * 1000,
-      checked: true,
+      checked: false,
       radio: "",
       result: false,
       result1: false,
-      aaa:''
+      aaa: "",
+      step: 1,
+      sum: 0,
+      index1: []
     };
   },
   methods: {
@@ -99,7 +120,113 @@ export default {
     },
     str() {
       this.$router.push("/xqy");
+    },
+    onClickLeft() {
+      this.$router.go(-1);
+    },
+    //点击加号
+    jia(index, id, num) {
+      console.log(num, id);
+      axios({
+        url: "http://106.12.14.214:8889/luxury/shoppingCart/changeCount",
+        params: { id: id, count: num + 1 }
+      }).then(data => {
+        if (this.list[index].check) {
+          this.sum += this.list[index].money * 1 * 100;
+        }
+      });
+    },
+    jian(index, id, num) {
+      console.log(num, id);
+      axios({
+        url: "http://106.12.14.214:8889/luxury/shoppingCart/changeCount",
+        params: { id: id, count: num - 1 }
+      }).then(data => {
+        if (this.list[index].check) {
+          this.sum += this.list[index].money * 1 * 100;
+        }
+      });
+    },
+    del(id, index) {
+      var num = -this.list[index].goodsNum - 1;
+      axios({
+        url: "http://106.12.14.214:8889/luxury/shoppingCart/del",
+        params: { uid: 1, ids: id }
+      }).then(data => {
+        console.log(data);
+        //location.reload()
+        axios({
+            			url:"http://106.12.14.214:8889/luxury/shoppingCart/showByPage",
+            			params: { uid:1, ids: id }
+            		}).then((data)=>{
+            			this.list=data.data.info
+            		})
+      });
+    },
+    all() {
+      if (!this.checked) {
+        for (let val of this.list) {
+          val.check = true;
+          this.sum += val.goodsVo2.money * 100 * val.goodsVo2.count;
+          console.log(val.check);
+        }
+      } else {
+        for (let val of this.list) {
+          val.check = false;
+          this.sum = 0;
+        }
+      }
+    },
+    gou(danxuan, index) {
+      console.log(this.list);
+      //单个商品的总价
+      let p =
+        parseFloat(this.list[index].goodsVo2.money) *
+        parseFloat(this.list[index].count).toFixed(2);
+      //checkbox索引
+      let _index = index;
+      if (!danxuan) {
+        //如果选中
+        this.sum += p * 100;
+        this.index1.push(_index);
+        //选中的checkbox数组
+        //console.log(this.index1)
+        this.list[_index].danxuan = "true";
+      } else {
+        //取消选中执行操作
+        this.sum -= p * 100;
+        this.index1.splice(_index, 1);
+        this.list[_index].danxuan = "";
+        console.log(this.index1);
+        //如果总价为0，取消全选
+        if (this.sum == 0) {
+          this.checked = false;
+        }
+      }
+
+      var indLength = this.index1.length;
+      var listLength = this.list.length;
+      if (indLength == listLength) {
+        this.checked = true;
+      } else {
+        this.checked = false;
+      }
     }
+  },
+  mounted() {
+    axios({
+      method: "post",
+      url: "http://106.12.14.214:8889/luxury/shoppingCart/showByPage",
+      params: { uid: 1 }
+    }).then(data => {
+      this.list = data.data.info;
+      console.log(data.data.info);
+      if (this.list.length != 0) {
+        this.aaa = "zhanwei";
+      } else {
+        alert("请添加商品");
+      }
+    });
   }
 };
 </script>

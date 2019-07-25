@@ -1,43 +1,43 @@
 <template>
-  <div>
-      <p>11111</p>
-    <!-- <van-swipe :autoplay="3000" indicator-color="white">
-      <van-swipe-item>
-        <img src="../assets/logo.png" alt />
-      </van-swipe-item>
-      <van-swipe-item>
-        <img src="../assets/logo.png" alt />
-      </van-swipe-item>
-      <van-swipe-item>
-        <img src="../assets/logo.png" alt />
-      </van-swipe-item>
-      <van-swipe-item>
-        <img src="../assets/logo.png" alt />
-      </van-swipe-item>
-    </van-swipe> -->
+  <div >
     <van-divider>品牌推荐</van-divider>
-    <van-grid>
-      <van-grid :gutter="10" :clickable="true">
-        <van-grid-item
-          @click="map()"
-          v-for="value in 9"
-          :key="value"
-          icon="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1563630190&di=c307f05ce395ed672c7490a832286659&src=http://ci.xiaohongshu.com/a61b598b-99f2-4696-9871-505ca5fa0f6d@r_750w_750h_ss1.jpg"
-          text="包包"
-        />
-      </van-grid>
-    </van-grid>
+ 
+<van-grid :border="false" :column-num="3" style='font-size:12px;'>
+  
+     <div v-for="(item,i) in list" :key="i"  >
+          <img
+            src="http://img2.imgtn.bdimg.com/it/u=743028019,327194179&fm=26&gp=0.jpg"
+            alt
+            @click="map()"
+            style="height:100px;width:100px"
+          />
+          <p>{{item.typeName}}</p>
+        </div>
+  
+</van-grid>
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   name: "",
   data() {
-    return {};
+    return {
+      list: []
+    };
+  },
+  mounted() {
+    axios({
+      methods: "post",
+      url: "http://106.12.14.214:8889/luxury/type/show"
+    }).then((data) => {
+      //console.log(data.data[0].list);
+      this.list = data.data[0].list;
+    });
   },
   methods: {
-    map(){
-      this.$router.push('/xqy')
+    map() {
+      this.$router.push("/brandtj");
     }
   }
 };

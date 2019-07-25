@@ -10,17 +10,18 @@
       <div slot="action" @click="onSearch">搜索</div>
     </van-search>
 
-    <van-row>
-      <van-col span="4">
+    <van-row style=" display: flex;">
+      <van-col>
         <van-sidebar v-model="activeKey">
           <van-sidebar-item title="推荐" to="/brand" />
-          <van-sidebar-item title="品牌推荐" to="/surface" />
           <van-sidebar-item title="名包" to="/handbag" />
           <van-sidebar-item title="配饰" to="/ornament" />
-          <van-sidebar-item title="女装" to="/meart"/>
+          <van-sidebar-item title="名表" to="/meart" />
+          <van-sidebar-item title="名鞋" to="/shoe" />
+          <van-sidebar-item title="其他" to="/Other" />
         </van-sidebar>
       </van-col>
-      <van-col span="12">
+      <van-col style="float:right">
         <router-view />
       </van-col>
     </van-row>

@@ -10,29 +10,20 @@
     />
     <div class="inner">
       <van-swipe :autoplay="3000" indicator-color="white">
-        <van-swipe-item>
-          <img src="https://img.yzcdn.cn/vant/apple-2.jpg" alt />
-        </van-swipe-item>
-        <van-swipe-item>
-          <img src="https://img.yzcdn.cn/vant/apple-2.jpg" alt />
-        </van-swipe-item>
-        <van-swipe-item>
-          <img src="https://img.yzcdn.cn/vant/apple-2.jpg" alt />
-        </van-swipe-item>
-        <van-swipe-item>
-          <img src="https://img.yzcdn.cn/vant/apple-2.jpg" alt />
+        <van-swipe-item v-for="(item,i) in list" :key="i">
+          <img :src="item.path" alt style="height:200px;height:300px" />
         </van-swipe-item>
       </van-swipe>
       <van-row type="flex" class="ms">
         <van-col span="6">
           ￥
-          <span>3720</span>
+          <span>{{money}}</span>
         </van-col>
         <van-col span="6">
-          市场价：
-          <span>6850</span>
+          商品：
+          <span>{{goodsName}}</span>
         </van-col>
-        <van-col span="6">6折</van-col>
+        <van-col span="6" style="color:red">{{discount+'折'}}</van-col>
       </van-row>
       <van-divider />
       <van-row type="flex" class="ms">
@@ -40,9 +31,9 @@
           <van-button plain type="primary" size="mini">自营</van-button>
         </van-col>
         <van-col span="6">
-          <span>单肩包</span>
+          <span>{{brand}}</span>
         </van-col>
-        <van-col span="6">[xx新]</van-col>
+        <van-col span="6" style="color:red">[{{commQuality}}]</van-col>
       </van-row>
       <van-divider />
       <van-row type="flex" justify="space-between" class="ms">
@@ -50,9 +41,9 @@
           <van-button plain type="primary" size="mini">分期</van-button>
         </van-col>
         <van-col span="6">
-          <span>[****]</span>
+          <span>[花呗]</span>
         </van-col>
-        <van-col span="6">***</van-col>
+        <van-col span="6">免息</van-col>
       </van-row>
       <van-divider />
       <van-divider />
@@ -63,7 +54,7 @@
         <van-col span="6">
           <span>专业保真</span>
         </van-col>
-        <van-col span="6">***</van-col>
+        <van-col span="6">质保12个月</van-col>
       </van-row>
       <van-divider />
       <van-row type="flex" justify="space-between" class="ms">
@@ -73,12 +64,6 @@
       <van-row type="flex" justify="space-around" class="ms">
         <van-col span="6">编号</van-col>
         <van-col span="6">112826</van-col>
-        <van-col span="6"></van-col>
-      </van-row>
-      <van-divider />
-      <van-row type="flex" justify="space-around" class="ms">
-        <van-col span="6">品牌</van-col>
-        <van-col span="6">阿玛尼</van-col>
         <van-col span="6"></van-col>
       </van-row>
       <van-divider />
@@ -115,11 +100,22 @@
   </div>
 </template>
 <script>
+import axios from "axios";
+import qs from "qs";
 export default {
+  data() {
+    return {
+      list: [],
+      money: "",
+      goodsName: "",
+      discount: "",
+      commQuality: "",
+      brand: ""
+    };
+  },
   methods: {
     onClickLeft() {
       this.$router.go(-1);
-      //Toast('返回');
     },
     onClickRight() {
       Toast("按钮");
@@ -128,8 +124,35 @@ export default {
       Toast("点击图标");
     },
     onClickButton() {
-      this.$router.push("/cart");
+      axios({
+        method: "post",
+        url: "http://106.12.14.214:8889/luxury/shoppingCart/addCart",
+        data: qs.stringify({ "uid": 1, "gid": 1 })
+      }).then(data => {
+       // console.log(data);
+        this.$router.push("/cart");
+      });
     }
+  },
+  mounted() {
+    var id = this.$route.params.id.split("=")[1];
+    var _this = this;
+    axios({
+      methods: "post",
+      url: "http://106.12.14.214:8889/luxury/goods/goodsDetail",
+      params: {
+        id: id
+      }
+    }).then(data => {
+      // console.log(data);
+      // console.log(_this.$route.params.id);
+      _this.money = data.data.money;
+      _this.goodsName = data.data.goodsName;
+      _this.discount = data.data.discount;
+      _this.commQuality = data.data.commQuality;
+      _this.brand = data.data.brand;
+      _this.list = data.data.list;
+    });
   }
 };
 </script>
