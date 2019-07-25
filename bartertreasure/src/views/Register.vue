@@ -53,6 +53,8 @@
     </div>
 </template>
 <script>
+import axios from 'axios'
+import qs from 'qs'
 import { Toast } from 'vant';
 export default {
   name:'Register',
@@ -72,13 +74,18 @@ export default {
     register(){
       //console.log(this.checkName(),this.checkPhone(),this.checkPWD1(),this.checkPWD2());
       if(this.checkName() && this.checkPhone() && this.checkPWD1() && this.checkPWD2()){
-        this.$axios.post('http://106.12.14.214:8889/luxury/admin/register.do',{
-          loginName:this.username,
-          password:this.password1,
-          phone:this.phone
+        this.$axios({
+          method:'post',
+          url:'http://106.12.14.214:8889/luxury/admin/register.do',
+          data:qs.stringify({
+            'loginName':this.username,
+            'phone':this.phone,
+            'password':this.password1
+          })
         }).then((data)=>{
           if(data.data.code == 1){
-            Toast(data.data.info)
+            Toast('注册成功，请登录')
+            this.$router.push('/login')
           }else{
             Toast(data.data.info)
           }
@@ -97,11 +104,18 @@ export default {
       {
           this.msgName="用户名至少2个字符";
       }else{
-        this.$axios.post('http://106.12.14.214:8889/luxury/admin/validateLoginName.do',{
-          loginName:this.username
+
+        //问题：post请求转换成了get请求,methods > method
+        this.$axios({
+          method:'post',  //method
+          url:'http://106.12.14.214:8889/luxury/admin/validateLoginName.do',
+          data:qs.stringify({
+            'loginName':this.username
+          }),
         }).then((data)=>{
-          //console.log(data.data);
+          //console.log(data);
           if(data.data.code == 1){
+            //console.log(this.username);
             this.msgName = data.data.info
             return this.username
           }else{
@@ -115,8 +129,12 @@ export default {
     checkPhone(){
       var testRePho = /^1((3[\d])|(4[5,6,7,9])|(5[0-3,5-9])|(6[5-7])|(7[0-8])|(8[\d])|(9[1,8,9]))\d{8}$/;
       if(testRePho.test(this.phone)){
-        this.$axios.post('http://106.12.14.214:8889/luxury/admin/validatePhone.do',{
-          phone:this.phone
+        this.$axios({
+          method:'post',
+          url:'http://106.12.14.214:8889/luxury/admin/validatePhone.do',
+          data:qs.stringify({
+            'phone':this.phone
+          })
         }).then((data)=>{
           if(data.data.code == 1){
             this.msgPhone = data.data.info

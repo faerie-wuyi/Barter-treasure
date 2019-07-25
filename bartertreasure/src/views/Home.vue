@@ -11,7 +11,7 @@
             <img class="swipe" :src="img.goodsPath">
           </van-swipe-item>
         </van-swipe>
-
+        <h4>亲爱的{{this.$store.state.userName}}，欢迎来到易物宝</h4>
         <div class="recommend">
           <h4 class="title">今日推荐</h4>
           <van-card
@@ -39,13 +39,7 @@
           />
 
         </div>
-
-
-
-
      </div>
-
-
    </div>
 </template>
 
@@ -61,7 +55,8 @@ export default {
       ssall:[],
       ssend:[],
       listTJ:[],
-      listJL:[]
+      listJL:[],
+
       // time: 30 * 60 * 60 * 1000,
     }
   },
@@ -74,7 +69,7 @@ export default {
     },
     onSearch(){
       this.$axios({
-      methods:'post',
+      method:'post',
       url:'http://106.12.14.214:8889/luxury/goods/search'
     }).then((data)=>{
         this.ssall = data.data;
@@ -86,14 +81,6 @@ export default {
     }
   },
   mounted(){
-    // this.$axios({
-    //   methods:'post',
-    //   url:'http://106.12.14.214:8889/luxury/slideshow/list'
-    // }).then((data)=>{
-    //   //console.log(data.data)
-    //   this.images = data.data
-    // })
-
     //并发请求
     this.$axios.all([
       this.$axios.post('http://106.12.14.214:8889/luxury/slideshow/list'),

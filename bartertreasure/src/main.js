@@ -5,7 +5,6 @@ import App from './App'
 import router from './router'
 import VueTap from 'v-tap'
 import Vant from 'vant'
-
 import 'vant/lib/index.css'
 
 import store from './store'
@@ -13,6 +12,7 @@ import './assets/font1/iconfont.css'
 import Icon from 'vant'
 import cors from 'cors'
 import axios from 'axios'
+
 
 Vue.config.productionTip = false
 Vue.use(Vant);

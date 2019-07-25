@@ -8,13 +8,13 @@
         <img src="../../build/ywb2.png" alt="">
         <van-cell-group>
           <van-field
-            v-model="phone"
+            v-model="username"
             clearable
-            placeholder="请输入手机号"
-            left-icon="phone"
-            @blur="checkPhone()"
+            placeholder="请输入用户名"
+            left-icon="manager"
+            @blur="checkName()"
           />
-          <span>{{msgPhone}}</span>
+          <span>{{msgName}}</span>
           <van-field
             v-model="password1"
             type="password"
@@ -28,7 +28,6 @@
             <span @click="toResetPwd()">忘记密码</span>
             <span @click="toRegister()">注册帐号</span>
           </van-row>
-          <van-button type="danger" round size="normal" to="./index">接口有问题,点我进首页</van-button>
         </van-cell-group>
       </div>
     </div>
@@ -36,15 +35,17 @@
 
 <script>
 import axios from 'axios'
+import qs from 'qs'
 import { Toast } from 'vant'
 export default {
   name:'Login',
   data(){
     return{
-      phone:'',
+      username:'',
       password1:'',
-      msgPhone:'',
-      msgPWD1:''
+      msgName:'',
+      msgPWD1:'',
+      idArr:[]
 
     }
   },
@@ -56,40 +57,56 @@ export default {
       this.$router.push('/register')
     },
     login(){
-      //console.log(this.checkPhone(),this.checkPWD1());
-      if(this.checkPhone() && this.checkPWD1()){
-        this.$axios.post('http://106.12.14.214:8889/luxury/admin/validateCode.do',{
-          phone:this.phone,
-          password:this.password1,
+      //console.log(this.checkName(),this.checkPWD1());
+      if(this.checkName() && this.checkPWD1()){
+        this.$axios({
+          method:'post',
+          url:'http://106.12.14.214:8889/luxury/admin/login.do',
+          data:qs.stringify({
+            'username':this.username,
+            'password':this.password1,
+            'flag':1
+          })
         }).then((data)=>{
-          console.log(data.data);
           if(data.data.code == 1){
-            Toast(data.data.info)
-            this.$router.push('./Index.vue')
+            this.idArr =  data.data.info.split(',')
+            //this.idArr = JSON.parse(JSON.stringify(this.idArr0))
+            //console.log(this.idArr);
+            this.$store.commit('login',this.idArr) //写在函数外没值嗷
+            // localStorage.setItem('userID',this.idArr[0])
+            // localStorage.setItem('userName',this.idArr[1])
+            this.$router.push('/index')
           }else{
-            Toast('手机号未注册')
+            Toast(data.data.info)
           }
         })
       }else{
           Toast('请按正确的格式填写信息')
       }
     },
-    checkPhone(){
-      var testRePho = /^1((3[\d])|(4[5,6,7,9])|(5[0-3,5-9])|(6[5-7])|(7[0-8])|(8[\d])|(9[1,8,9]))\d{8}$/;
-      if(testRePho.test(this.phone)){
-        this.$axios.post('http://106.12.14.214:8889/luxury/admin/validatePhone.do',{
-          phone:this.phone
+    checkName(){
+      if(this.username.length==0){
+          this.msgName="用户名不能为空";
+      }else if(this.username.length<2)
+      {
+          this.msgName="用户名至少2个字符";
+      }else{
+        this.$axios({
+          method:'post',
+          url:'http://106.12.14.214:8889/luxury/admin/validateLoginName.do',
+          data:qs.stringify({
+            'loginName':this.username
+          })
         }).then((data)=>{
+          //console.log(data.data);
           if(data.data.code == 1){
-            this.msgPhone = '手机号未注册'
+            this.msgName = '用户名不存在'
           }else{
-            this.msgPhone = ''
+            // return this.username
           }
         })
-      }else{
-        this.msgPhone = '请输入正确的手机号';
+        return this.username
       }
-      return this.phone
     },
     checkPWD1(){
       var testRePwd = /^(\w){6,20}$/;
