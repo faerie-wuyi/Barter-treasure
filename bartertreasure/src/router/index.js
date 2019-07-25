@@ -16,8 +16,9 @@ import Brand from '@/views/Brand'
 
 import Brandtj from '@/views/Brandtj'
 import Handbag from '@/views/Handbag'
-import Surface from '@/views/Surface'
+import Other from '@/views/Other'
 import Ornament from '@/views/Ornament'
+import Shoe from '@/views/Shoe'
 import Meart from '@/views/Meart'
 import Xqy from '@/views/Xqy'
 import Cart from '@/views/Cart'
@@ -149,6 +150,8 @@ export default new Router({
         {
             path: '/index',
             redirect: '/home',
+            name: 'Index ',
+
             component: Index,
             children: [
                 { path: '/home', component: Home },
@@ -162,8 +165,8 @@ export default new Router({
                             path: '/handbag',
                             component: Handbag,
                         }, {
-                            path: '/surface',
-                            component: Surface,
+                            path: '/other',
+                            component: Other,
                         },
                         {
                             path: '/ornament',
@@ -172,6 +175,10 @@ export default new Router({
                         {
                             path: '/meart',
                             component: Meart,
+                        },
+                        {
+                            path: '/shoe',
+                            component: Shoe,
                         }
 
                     ]
@@ -179,18 +186,21 @@ export default new Router({
                 { path: '/release', component: Release },
                 { path: '/cart', component: Cart },
                 { path: '/user', component: User },
+            ],
 
-            ]
+
+
         },
         {
             path: '/brandtj',
             component: Brandtj,
         },
         {
-            path: '/xqy',
+            path: '/xqy/:id',
             name: 'Xqy',
             component: Xqy,
-        }, {
+        },
+        {
             path: '/order',
             name: 'Order',
             component: Order

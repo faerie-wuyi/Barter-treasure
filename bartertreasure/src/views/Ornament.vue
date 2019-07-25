@@ -1,50 +1,22 @@
 <template>
 <div>
-    <p>商品分类55555</p>
-  <van-dropdown-menu>
-  <van-dropdown-item v-model="value" :options="option" />
-  <van-dropdown-item title="筛选" ref="item">
-    <van-switch-cell v-model="switch1" title="1000以下" />
-    <van-switch-cell v-model="switch2" title="1000-3000" />
-     <van-switch-cell v-model="switch3" title="3000以上" />
-    <van-button block type="info" @click="onConfirm">确认</van-button>
-  </van-dropdown-item>
-</van-dropdown-menu>
+   <p>配饰分类</p>
+<van-grid :border="false" :column-num="3" style='font-size:12px'>
+   <div  v-for='(item,i) in list' :key='i'>
+   <img src='http://img4.imgtn.bdimg.com/it/u=2447399991,2006364107&fm=26&gp=0.jpg' alt=""  @click='app()'  style="height:100px;width:100px">
+   <p>{{item.typeName}}</p>
+ </div>
 
-<van-grid :border="false" :column-num="3">
-  <van-grid-item>
-    <van-image  @click='app()' src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2466035006,3875392428&fm=26&gp=0.jpg" />
-   <div><span>111</span><van-button  type="primary"  size="mini">加入购物车</van-button></div>
-   
-  </van-grid-item>
-  <van-grid-item>
-    <van-image @click='app()' src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2466035006,3875392428&fm=26&gp=0.jpg" />
-    <div><span>111</span><van-button  type="primary"  size="mini">加入购物车</van-button></div>
-  </van-grid-item>
-  <van-grid-item>
-    <van-image src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2466035006,3875392428&fm=26&gp=0.jpg" />
-    <div><span>111</span><van-button  type="primary"  size="mini">加入购物车</van-button></div>
-  </van-grid-item>
-   <van-grid-item>
-    <van-image src="https://img.yzcdn.cn/vant/apple-3.jpg" />
-    <div><span>111</span><van-button  type="primary"  size="mini">加入购物车</van-button></div>
-  </van-grid-item>
-   <van-grid-item>
-    <van-image src="https://img.yzcdn.cn/vant/apple-3.jpg" />
-    <div><span>111</span><van-button  type="primary"  size="mini">加入购物车</van-button></div>
-  </van-grid-item>
-   <van-grid-item>
-    <van-image src="https://img.yzcdn.cn/vant/apple-3.jpg" />
-    <div><span>111</span><van-button  type="primary"  size="mini">加入购物车</van-button></div>
-  </van-grid-item>
 </van-grid>
 </div>
 </template>
 <script>
+import axios from "axios";
 export default {
     data() {
     return {
       value: 0,
+      list:[],
       switch1: false,
       switch2: false,
       switch3: false,
@@ -56,12 +28,21 @@ export default {
 
     }
   },
+  mounted() {
+    axios({
+      methods: "post",
+      url: "http://106.12.14.214:8889/luxury/type/show"
+    }).then((data) => {
+     // console.log(data.data[2].list);
+      this.list = data.data[2].list;
+    });
+  },
      methods: {
     onConfirm() {
       this.$refs.item.toggle();
     },
     app(){
-      this.$router.push('/xqy')
+      this.$router.push('/brandtj')
     }
   }
 }
